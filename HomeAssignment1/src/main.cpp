@@ -1,7 +1,7 @@
+#include "../include/encode.h"
 #include <iostream>
-#include <vector>
 
 int main()
 {
-    return 0;
+    std::cout << encodeAscii85("Matmeh25")<<std::endl;
 }
