@@ -27,7 +27,7 @@ void runInteractiveShell()
         {
             break;
         }
-        else if (command == "ascii85 -e")
+        else if (command == "ascii85 -e"|| command == "ascii85")
         {
             std::cout << "Enter data (end with 'END'):\n";
             std::string data = readMultilineInput("END");

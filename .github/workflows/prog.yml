@@ -22,4 +22,4 @@ jobs:
         run: cd HomeAssignment1 && make tests
 
       - name: Run tests
-        run: cd HomeAssignment1 && ./test-prog
+        run: cd HomeAssignment1 && ./test-ascii85
