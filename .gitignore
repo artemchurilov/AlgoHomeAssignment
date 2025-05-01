@@ -37,3 +37,4 @@ prog
 ascii85
 test-ascii85
 test-prog
+*.txt

@@ -11,4 +11,11 @@ ASCII85 coder\decoder
 make
 
 # Run
-./prog
+Examples:
+
+./ascii85 
+./ascii85 -d
+./ascii85 "yourfile".txt > "yourfile.txt"
+./ascii85 -d "yourfile".txt > "yourfile.txt"
+
+-echo 

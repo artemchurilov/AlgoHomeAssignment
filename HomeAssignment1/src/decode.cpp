@@ -2,67 +2,56 @@
 #include <vector>
 #include <cstdint>
 #include "../include/decode.h"
+#include "../include/const.h"
 
-std::string decodeAscii85(std::string input)
+std::vector<uint8_t> decode_block(const std::string& group)
 {
-    std::string output;
-    std::vector<uint8_t> bytes(input.begin(),input.end());
-    size_t i = 0;
-    const size_t inputSize = bytes.size();
-    while (i < inputSize)
+    if (group == "z") return std::vector<uint8_t>(4, 0);
+
+    uint32_t num = 0;
+    for (char c : group)
     {
-        if (bytes[i]=='z')
+        if (c < '!' || c > 'u') throw std::runtime_error("Invalid character");
+        num = num * 85 + (c - 33);
+    }
+
+    std::vector<uint8_t> decoded(4);
+    for (size_t i = 0; i < 4; ++i)
+    {
+        decoded[i] = (num >> (24 - i * 8)) & 0xFF;
+    }
+    return decoded;
+}
+
+void decode(std::istream& in, std::ostream& out)
+{
+    std::string group;
+    char c;
+    while (in.get(c))
+    {
+        if (isspace(c)) continue;
+
+        if (c == 'z')
         {
-            output.insert(output.end(),4,0);
-            i++;
+            if (!group.empty()) throw std::runtime_error("Invalid 'z' position");
+            out.write("\0\0\0\0", 4);
             continue;
         }
 
-        std::string part;
-        size_t original_len = 0;
-        while (part.size()<5 && i<inputSize)
+        group += c;
+        if (group.size() == DECODE_BLOCK)
         {
-            char c = bytes[i];
-            if (c == 'z')
-            {
-                break;
-            }
-            if (c < '!' || c > 'u')
-            {
-                i++;
-                continue;
-            }
-            part += c;
-            i++;
-            original_len++;
-        }
-
-        if (part.size()<5)
-        {
-            part.append(5-part.size(), 'u');
-        }
-
-        uint32_t value = 0;
-        for (char c : part)
-        {
-            value = value * 85 + (c-33);
-        }
-
-        std::vector<uint8_t> decode_bytes(4);
-        decode_bytes[0] = (value >> 24) & 0xFF;
-        decode_bytes[1] = (value >> 16) & 0xFF;
-        decode_bytes[2] = (value >> 8) & 0xFF;
-        decode_bytes[3] = (value) & 0xFF;
-
-        if (original_len < 5)
-        {
-            output.insert(output.end(), decode_bytes.begin(), decode_bytes.begin()+original_len);
-        }
-        else
-        {
-            output.insert(output.end(), decode_bytes.begin(), decode_bytes.end());
-
+            auto decoded = decode_block(group);
+            out.write(reinterpret_cast<char*>(decoded.data()), 4);
+            group.clear();
         }
     }
-    return output;
+
+    if (!group.empty())
+    {
+        if (group.size() < 2) throw std::runtime_error("Invalid padding");
+        group.append(DECODE_BLOCK - group.size(), 'u');
+        auto decoded = decode_block(group);
+        out.write(reinterpret_cast<char*>(decoded.data()), group.size() - 1);
+    }
 }
