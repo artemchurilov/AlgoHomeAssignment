@@ -1,31 +1,66 @@
 #include <iostream>
 #include <vector>
 #include <cstdint>
+#include <cctype>
+#include <algorithm>
+
 #include "../include/encode.h"
 #include "../include/const.h"
 
-std::string encode_block(const std::vector<uint8_t>& data, size_t bytes) 
+std::string encode_block(const std::vector<uint8_t>& data, size_t original_bytes)
 {
     uint32_t num = 0;
-    for (size_t i = 0; i < 4; ++i) {
-        num = (num << 8) | (i < bytes ? data[i] : 0);
+    for (size_t i = 0; i < 4; ++i)
+    {
+        num = (num << 8) | (i < original_bytes ? data[i] : 0);
     }
 
-    if (num == 0 && bytes == 4) return "z";
+    if (num == 0 && original_bytes == 4) return "z";
 
-    std::vector<char> encoded(5);
-    for (int i = 4; i >= 0; --i) {
-        encoded[i] = num % 85 + 33;
+    std::string encoded;
+    for (int i = 0; i < 5; ++i)
+    {
+        encoded.push_back(num % 85 + 33);
         num /= 85;
     }
-    
-    return std::string(encoded.begin(), encoded.begin() + (bytes + 1));
+    std::reverse(encoded.begin(), encoded.end());
+
+    size_t encoded_length = original_bytes + 1;
+    return encoded.substr(0, encoded_length);
 }
 
 void encode(std::istream& in, std::ostream& out)
 {
-    std::vector<uint8_t> buffer(ENCODE_BLOCK);
-    while (in.read(reinterpret_cast<char*>(buffer.data()), ENCODE_BLOCK) || in.gcount() > 0) {
-        out << encode_block(buffer, in.gcount());
+    std::vector<uint8_t> buffer;
+    char c;
+
+    while (in.get(c))
+    {
+        if (c == '\n')
+        {
+            if (!buffer.empty())
+            {
+                auto encoded = encode_block(buffer, buffer.size());
+                out << encoded << '\n';
+                buffer.clear();
+            }
+            continue;
+        }
+
+        if (!std::isspace(static_cast<unsigned char>(c)))
+        {
+            buffer.push_back(c);
+
+            if (buffer.size() == ENCODE_BLOCK)
+            {
+                out << encode_block(buffer, ENCODE_BLOCK);
+                buffer.clear();
+            }
+        }
+    }
+    if (!buffer.empty())
+    {
+        auto encoded = encode_block(buffer, buffer.size());
+        out << encoded;
     }
 }

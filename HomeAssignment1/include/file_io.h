@@ -5,7 +5,8 @@
 #include <memory>
 #include <stdexcept>
 
-struct IOStreams {
+struct IOStreams
+{
     std::istream* in;
     std::ostream* out;
     std::unique_ptr<std::ifstream> fin;

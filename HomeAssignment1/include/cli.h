@@ -4,7 +4,8 @@
 #include <string>
 #include <stdexcept>
 
-struct Config {
+struct Config
+{
     bool decode_mode = false;
     std::string input_file;
     std::string output_file;
