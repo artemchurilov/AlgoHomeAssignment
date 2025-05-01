@@ -47,17 +47,15 @@ void encode(std::istream& in, std::ostream& out)
             continue;
         }
 
-        if (!std::isspace(static_cast<unsigned char>(c)))
-        {
-            buffer.push_back(c);
+        buffer.push_back(c);
 
-            if (buffer.size() == ENCODE_BLOCK)
-            {
-                out << encode_block(buffer, ENCODE_BLOCK);
-                buffer.clear();
-            }
+        if (buffer.size() == ENCODE_BLOCK)
+        {
+            out << encode_block(buffer, ENCODE_BLOCK);
+            buffer.clear();
         }
     }
+    
     if (!buffer.empty())
     {
         auto encoded = encode_block(buffer, buffer.size());
