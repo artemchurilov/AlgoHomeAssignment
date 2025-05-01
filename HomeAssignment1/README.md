@@ -4,11 +4,11 @@
 st130184@student.spbu.ru
 24.Б82-мм
 
-#HomeAssignment1
+# HomeAssignment1
 ASCII85 coder\decoder
 
-#Build
+# Build
 make
 
-#Run
+# Run
 ./prog
