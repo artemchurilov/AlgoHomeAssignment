@@ -3,5 +3,7 @@
 
 int main()
 {
-    std::cout << encodeAscii85("Matmeh25")<<std::endl;
+    std::string text;
+    std::getline(std::cin,text);
+    std::cout << encodeAscii85(text)<<std::endl;
 }

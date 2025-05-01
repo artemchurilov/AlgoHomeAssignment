@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdint>
+
 #include "../include/encode.h"
 
 std::string encodeAscii85(std::string input)
