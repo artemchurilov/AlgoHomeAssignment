@@ -86,18 +86,14 @@ void decode(std::istream& in, std::ostream& out)
 
         if (c == 'z')
         {
-            if (in_group || !group.empty()) throw std::runtime_error("'z' in middle of group");
-
-            std::string zcheck(1, 'z');
-            for (int i = 0; i < 4; ++i)
+            if (in_group || !group.empty())
             {
-                if (!in.get(c) || c != 'z') throw std::runtime_error("Invalid 'z' group");
-                zcheck += c;
+                throw std::runtime_error("'z' in middle of group");
             }
 
             std::vector<uint8_t> zeros(4, 0);
             validate_output_bytes(zeros);
-            out.write("\0\0\0\0", 4);
+            out.write(reinterpret_cast<const char*>(zeros.data()), 4);
             continue;
         }
 

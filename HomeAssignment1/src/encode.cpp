@@ -55,7 +55,7 @@ void encode(std::istream& in, std::ostream& out)
             buffer.clear();
         }
     }
-    
+
     if (!buffer.empty())
     {
         auto encoded = encode_block(buffer, buffer.size());

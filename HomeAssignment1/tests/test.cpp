@@ -11,6 +11,18 @@ TEST(EncodeDecodeTest, FourZerosEncodeToZ) {
     EXPECT_EQ(result, "z");
 }
 
+TEST(EncodeDecodeTest, Z) {
+    std::string original = "z";
+    std::istringstream ein(original);
+    std::ostringstream eout;
+    encode(ein, eout);
+    std::istringstream din(eout.str());
+    std::ostringstream dout;
+    decode(din, dout);
+    EXPECT_EQ(original, dout.str());
+}
+
+
 TEST(DecodeTest, ZInGroup) {
     std::istringstream in("azbc");
     std::ostringstream out;
