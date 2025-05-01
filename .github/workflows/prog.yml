@@ -19,7 +19,7 @@ jobs:
 
 
       - name: Build
-        run: cd HomeAssignment && make tests
+        run: cd HomeAssignment1 && make tests
 
       - name: Run tests
-        run: cd HomeAssignment && ./test-prog
+        run: cd HomeAssignment1 && ./test-prog
