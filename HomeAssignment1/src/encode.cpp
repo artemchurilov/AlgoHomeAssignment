@@ -25,16 +25,17 @@ std::string encodeAscii85(std::string input)
                 part <<= 8;
                 ++pad;
             }
-            
+
         }
-        if (pad == 0 && part == 0) {
+        if (pad == 0 && part == 0)
+        {
             output += 'z';
             continue;
         }
-        
+
         char chars[5];
         uint32_t temp = part;
-        for (int k=4; k>=0 ;k--)
+        for (int k=4; k>=0 ; k--)
         {
             chars[k]= temp%85;
             temp /= 85;
@@ -44,9 +45,12 @@ std::string encodeAscii85(std::string input)
         {
             chars[k]+=33;
         }
-        if (pad > 0) {
+        if (pad > 0)
+        {
             output.append(chars, chars + (5 - pad));
-        } else {
+        }
+        else
+        {
             output.append(chars, chars + 5);
         }
     }

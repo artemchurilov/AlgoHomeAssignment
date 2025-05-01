@@ -25,12 +25,12 @@ std::string decodeAscii85(std::string input)
             char c = bytes[i];
             if (c == 'z')
             {
-                break;   
+                break;
             }
             if (c < '!' || c > 'u')
             {
                 i++;
-                continue;   
+                continue;
             }
             part += c;
             i++;

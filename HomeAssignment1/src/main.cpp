@@ -1,10 +1,14 @@
 #include "../include/encode.h"
 #include "../include/decode.h"
+#include "../include/shell.h"
 #include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <cstdint>
 
 int main()
 {
-    std::string text;
-    std::getline(std::cin,text);
-    std::cout << decodeAscii85(encodeAscii85(text))<<std::endl;
+    runInteractiveShell();
+    return 0;
 }

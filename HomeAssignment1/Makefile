@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -std=c++17 -I. -Werror -Wpedantic -Wall -Wextra -g -fPIC
 LDFLAGS = -lm
 
-TARGET = prog
+TARGET = ascii85
 LIBPROJECT = lib$(TARGET).a
 TESTPROJECT = test-$(TARGET)
 
