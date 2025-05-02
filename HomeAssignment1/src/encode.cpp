@@ -36,17 +36,6 @@ void encode(std::istream& in, std::ostream& out)
 
     while (in.get(c))
     {
-        if (c == '\n')
-        {
-            if (!buffer.empty())
-            {
-                auto encoded = encode_block(buffer, buffer.size());
-                out << encoded << '\n';
-                buffer.clear();
-            }
-            continue;
-        }
-
         buffer.push_back(c);
 
         if (buffer.size() == ENCODE_BLOCK)
@@ -61,4 +50,5 @@ void encode(std::istream& in, std::ostream& out)
         auto encoded = encode_block(buffer, buffer.size());
         out << encoded;
     }
+    out.flush();
 }

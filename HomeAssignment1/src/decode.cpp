@@ -8,16 +8,16 @@
 #include "../include/decode.h"
 #include "../include/const.h"
 
-void validate_output_bytes(const std::vector<uint8_t>& data)
-{
-    for (uint8_t byte : data)
-    {
-        if (byte!=0x0 && byte != '\n' && byte != '\r' && (byte < 0x20 || byte > 0x7E))
-        {
-            throw std::runtime_error("Invalid character in output: 0x" + std::to_string(static_cast<int>(byte)));
-        }
-    }
-}
+// void validate_output_bytes(const std::vector<uint8_t>& data)
+// /{
+//     // for (uint8_t byte : data)
+//     // {
+//     //     if (byte!=0x0 && byte != '\n' && byte != '\r' && (byte < 0x20 || byte > 0x7E))
+//     //     {
+//     //         throw std::runtime_error("Invalid character in output: 0x" + std::to_string(static_cast<int>(byte)));
+//     //     }
+//     // }
+// }
 
 std::vector<uint8_t> decode_block(const std::string& group, size_t original_chars)
 {
@@ -47,7 +47,7 @@ std::vector<uint8_t> decode_block(const std::string& group, size_t original_char
         decoded.resize(original_chars - 1);
     }
 
-    validate_output_bytes(decoded);
+    //validate_output_bytes(decoded);
     return decoded;
 }
 
@@ -86,13 +86,12 @@ void decode(std::istream& in, std::ostream& out)
 
         if (c == 'z')
         {
-            if (in_group || !group.empty())
-            {
+            if (in_group || !group.empty()) {
                 throw std::runtime_error("'z' in middle of group");
             }
-
+        
             std::vector<uint8_t> zeros(4, 0);
-            validate_output_bytes(zeros);
+            //validate_output_bytes(zeros);
             out.write(reinterpret_cast<const char*>(zeros.data()), 4);
             continue;
         }
