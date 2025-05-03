@@ -25,6 +25,6 @@ jobs:
       - name: Run tests
         run: cd HomeAssignment1 && ./test-ascii85
       - name: Run pythontests
-        run: cd tests && chmod +x test.sh && ./test.sh
+        run: cd HomeAssignment1/tests && chmod +x test.sh && ./test.sh
 
       
