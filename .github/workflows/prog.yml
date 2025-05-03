@@ -22,9 +22,9 @@ jobs:
 
       - name: Run tests
         run: cd HomeAssignment1 && ./test-ascii85
-      - name: Run tests
-        run: cd HomeAssignment1 && ./test-ascii85
-      - name: Run pythontests
-        run: cd HomeAssignment1/tests && chmod +x test.sh && ./test.sh
 
+      - name: Run Encode Python tests
+        run: cd HomeAssignment1/tests && chmod +x test.sh && ./test.sh
+      - name: Run Decode Python tests
+        run: cd HomeAssignment1/tests && chmod +x test_decoder.sh && ./test_decoder.sh
       
