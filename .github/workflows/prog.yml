@@ -20,11 +20,10 @@ jobs:
       - name: Build
         run: cd HomeAssignment1 && make tests && make
 
-      - name: Run tests
-        run: cd HomeAssignment1 && ./test-ascii85
 
       - name: Run Encode Python tests
         run: cd HomeAssignment1/tests && chmod +x test.sh && ./test.sh
       - name: Run Decode Python tests
         run: cd HomeAssignment1/tests && chmod +x test_decoder.sh && ./test_decoder.sh
-      
+      - name: Run tests
+        run: cd HomeAssignment1 && ./test-ascii85
