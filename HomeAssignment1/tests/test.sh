@@ -6,7 +6,7 @@ python3 -c "import base64; print(base64.a85encode(open('test.bin','rb').read()).
 
 ./../ascii85 test.bin > our.a85
 
-if cmp -b py_stripped.a85 our_stripped.a85; then
+if cmp -b py.a85 our.a85; then
     echo "Test completed right."
 else
     echo "Test failed."
