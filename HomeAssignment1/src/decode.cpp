@@ -1,127 +1,71 @@
+#include <iostream>
 #include <vector>
-#include <string>
-#include <stdexcept>
-#include <istream>
-#include <ostream>
 #include <cstdint>
-#include <cctype>
-#include "../include/decode.h"
-#include "../include/const.h"
+#include <stdexcept>
+#include <sstream>
+#include <string>
 
-// void validate_output_bytes(const std::vector<uint8_t>& data)
-// /{
-//     // for (uint8_t byte : data)
-//     // {
-//     //     if (byte!=0x0 && byte != '\n' && byte != '\r' && (byte < 0x20 || byte > 0x7E))
-//     //     {
-//     //         throw std::runtime_error("Invalid character in output: 0x" + std::to_string(static_cast<int>(byte)));
-//     //     }
-//     // }
-// }
-
-std::vector<uint8_t> decode_block(const std::string& group, size_t original_chars)
+std::vector<uint8_t> decode_block(const std::string& block)
 {
-    if (group.size() != 5) throw std::runtime_error("Internal error: Invalid group size");
-
-    uint64_t num = 0;
-    for (char c : group)
+    if (block.size() != 5)
     {
-        if (c < '!' || c > 'u')
+        throw std::invalid_argument("Block must be exactly 5 characters long");
+    }
+
+    uint32_t num = 0;
+    for (char c : block)
+    {
+        if (c < 33 || c > 117)
         {
-            throw std::runtime_error(std::string("Invalid input character: ") + c);
+            throw std::invalid_argument("Invalid character in ASCII85 block");
         }
-        num = num * 85 + static_cast<uint8_t>(c - 33);
+        uint8_t value = c - 33;
+        num = num * 85 + value;
     }
 
-    if (num > 0xFFFFFFFFULL) throw std::runtime_error("Value exceeds 32-bit limit");
+    std::vector<uint8_t> result(4);
+    result[0] = (num >> 24) & 0xFF;
+    result[1] = (num >> 16) & 0xFF;
+    result[2] = (num >> 8)  & 0xFF;
+    result[3] =  num        & 0xFF;
 
-    std::vector<uint8_t> decoded(4);
-    decoded[0] = (num >> 24) & 0xFF;
-    decoded[1] = (num >> 16) & 0xFF;
-    decoded[2] = (num >> 8)  & 0xFF;
-    decoded[3] =  num        & 0xFF;
-
-    if (original_chars < 5)
-    {
-        if (original_chars == 1) throw std::runtime_error("Incomplete group");
-        decoded.resize(original_chars - 1);
-    }
-
-    //validate_output_bytes(decoded);
-    return decoded;
+    return result;
 }
 
 void decode(std::istream& in, std::ostream& out)
 {
-    std::string group;
+    std::string filtered;
     char c;
-    bool in_group = false;
 
     while (in.get(c))
     {
-        if (std::isspace(c))
+        if (c >= 33 && c <= 117)
         {
-            if (in_group)
-            {
-                if (group.size() < 2) throw std::runtime_error("Truncated group");
-
-                try
-                {
-                    size_t original = group.size();
-                    group.resize(5, 'u');
-                    auto decoded = decode_block(group, original);
-                    out.write(reinterpret_cast<const char*>(decoded.data()), decoded.size());
-                }
-                catch (...)
-                {
-                    group.clear();
-                    throw;
-                }
-
-                group.clear();
-                in_group = false;
-            }
-            continue;
-        }
-
-        if (c == 'z')
-        {
-            if (in_group || !group.empty()) {
-                throw std::runtime_error("'z' in middle of group");
-            }
-        
-            std::vector<uint8_t> zeros(4, 0);
-            //validate_output_bytes(zeros);
-            out.write(reinterpret_cast<const char*>(zeros.data()), 4);
-            continue;
-        }
-
-        in_group = true;
-        group += c;
-
-        if (group.size() == 5)
-        {
-            try
-            {
-                auto decoded = decode_block(group, 5);
-                out.write(reinterpret_cast<const char*>(decoded.data()), 4);
-            }
-            catch (...)
-            {
-                group.clear();
-                throw;
-            }
-            group.clear();
-            in_group = false;
+            filtered += c;
         }
     }
 
-    if (!group.empty())
+    const size_t block_size = 5;
+    const size_t total_len = filtered.size();
+    size_t remainder = total_len % block_size;
+
+    if (remainder == 1)
     {
-        if (group.size() < 2) throw std::runtime_error("Truncated final group");
-        size_t original = group.size();
-        group.resize(5, 'u');
-        auto decoded = decode_block(group, original);
-        out.write(reinterpret_cast<const char*>(decoded.data()), decoded.size());
+        throw std::runtime_error("Invalid last block size (1 character)");
+    }
+
+    for (size_t i = 0; i < total_len - remainder; i += block_size)
+    {
+        std::string block = filtered.substr(i, block_size);
+        auto decoded = decode_block(block);
+        out.write(reinterpret_cast<char*>(decoded.data()), decoded.size());
+    }
+
+    if (remainder > 0)
+    {
+        std::string last_block = filtered.substr(total_len - remainder, remainder);
+        last_block.append(block_size - remainder, 'u');
+        auto decoded = decode_block(last_block);
+        out.write(reinterpret_cast<char*>(decoded.data()), remainder - 1);
     }
 }

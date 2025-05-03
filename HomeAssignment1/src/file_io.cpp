@@ -28,7 +28,7 @@ IOStreams setup_streams(const std::string& input_file,
             throw std::runtime_error("Can't create output file");
         }
         streams.out = streams.fout.get();
-    }
 
+    }
     return streams;
 }
