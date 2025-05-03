@@ -23,6 +23,9 @@ jobs:
 
       - name: Run Encode Python tests
         run: cd HomeAssignment1/tests && chmod +x test.sh && ./test.sh
+
+      - name: Run Encode Python tests
+        run: cd HomeAssignment1/tests && chmod +x test_wrongdata.sh && ./test_wrongdata.sh
       - name: Run Decode Python tests
         run: cd HomeAssignment1/tests && chmod +x test_decoder.sh && ./test_decoder.sh
       - name: Run tests

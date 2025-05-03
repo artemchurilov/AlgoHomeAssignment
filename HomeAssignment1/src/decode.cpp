@@ -39,31 +39,50 @@ void decode(std::istream& in, std::ostream& out)
 
     while (in.get(c))
     {
-        if (c >= 33 && c <= 117)
-        {
+        if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
+            continue;
+        } else if (c >= 33 && c <= 117) {
             filtered += c;
+        } else if (c == 'z') {
+            filtered += c;
+        } else {
+            throw std::runtime_error("Invalid character in ASCII85 data");
+        }
+    }
+
+    for (size_t i = 0; i < filtered.size(); ++i) {
+        if (filtered[i] == 'z' && i % 5 != 0) {
+            throw std::runtime_error("Invalid 'z' position in ASCII85 data");
+        }
+    }
+
+    std::string replaced;
+    for (size_t i = 0; i < filtered.size();) {
+        if (filtered[i] == 'z') {
+            replaced += "!!!!!";
+            i += 1;
+        } else {
+            replaced.push_back(filtered[i]);
+            i += 1;
         }
     }
 
     const size_t block_size = 5;
-    const size_t total_len = filtered.size();
+    const size_t total_len = replaced.size();
     size_t remainder = total_len % block_size;
 
-    if (remainder == 1)
-    {
+    if (remainder == 1) {
         throw std::runtime_error("Invalid last block size (1 character)");
     }
 
-    for (size_t i = 0; i < total_len - remainder; i += block_size)
-    {
-        std::string block = filtered.substr(i, block_size);
+    for (size_t i = 0; i < total_len - remainder; i += block_size) {
+        std::string block = replaced.substr(i, block_size);
         auto decoded = decode_block(block);
         out.write(reinterpret_cast<char*>(decoded.data()), decoded.size());
     }
 
-    if (remainder > 0)
-    {
-        std::string last_block = filtered.substr(total_len - remainder, remainder);
+    if (remainder > 0) {
+        std::string last_block = replaced.substr(total_len - remainder, remainder);
         last_block.append(block_size - remainder, 'u');
         auto decoded = decode_block(last_block);
         out.write(reinterpret_cast<char*>(decoded.data()), remainder - 1);
