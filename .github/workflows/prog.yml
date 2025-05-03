@@ -15,11 +15,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y g++ libgtest-dev libgmock-dev
-
+        run: sudo apt-get update && sudo apt-get install -y g++ python3 libgtest-dev libgmock-dev
 
       - name: Build
-        run: cd HomeAssignment1 && make tests
+        run: cd HomeAssignment1 && make tests && make
 
       - name: Run tests
         run: cd HomeAssignment1 && ./test-ascii85
+      - name: Run tests
+        run: cd HomeAssignment1 && ./test-ascii85
+      - name: Run pythontests
+        run: cd tests && chmod +x test.sh && ./test.sh
+
+      
