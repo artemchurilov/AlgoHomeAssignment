@@ -36,4 +36,4 @@ jobs:
         run: cd HomeAssignment1 && ./test-ascii85
 
       - name: Run Gauss tests
-        run: cd HomeAssigments2 && ./test-gauss
+        run: cd HomeAssignment2 && ./test-gauss
