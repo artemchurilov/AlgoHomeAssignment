@@ -14,13 +14,13 @@ int main() {
     Eigen::MatrixXd result(A.rows(), A.cols());
 
     int rowcount = A.rows();
-    
+
     for (int j=0;j < rowcount; ++j)
     {
         result.row(j)=A.row(j)/A(j,j);
         for (int i=0; i<rowcount;++i)
         {   
-            if (i==0)
+            if (i==j)
             {
                 temp.row(i)=A.row(i)/result(j,j);
             }
@@ -30,6 +30,23 @@ int main() {
             }
         }   
         A=temp;
+    }
+    A=result;
+    for (int i=rowcount-1;i>=0;--i)
+    {
+        temp = A;
+        for (int j=rowcount-1; j>=0;--j)
+        {        
+            if (j==i)
+            {
+
+            }
+            else
+            {
+                A.row(i)-=temp(i,j)*temp.row(j);
+            }
+            
+        }
     }
     std::cout << A <<std::endl<<std::endl<<temp<<std::endl<<std::endl<<result<<std::endl;
 

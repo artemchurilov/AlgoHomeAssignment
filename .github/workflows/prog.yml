@@ -17,8 +17,12 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y g++ python3 libgtest-dev libgmock-dev
 
-      - name: Build
+      - name: BuildAscii85Tests
         run: cd HomeAssignment1 && make tests && make
+        
+      - name: BuildGaussTests
+        run: cd HomeAssignment2 && make tests && make
+
 
 
       - name: Run Encode Python tests
@@ -30,3 +34,6 @@ jobs:
         run: cd HomeAssignment1/tests && chmod +x test_decoder.sh && ./test_decoder.sh
       - name: Run tests
         run: cd HomeAssignment1 && ./test-ascii85
+
+      - name: Run Gauss tests
+        run: cd HomeAssigments2/tests && ./test-gauss
