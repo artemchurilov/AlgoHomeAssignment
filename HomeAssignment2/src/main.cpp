@@ -10,17 +10,28 @@
 
 int main() {
     Eigen::MatrixXd A = fileRead("AB.csv");
-    Eigen::MatrixXd B(3, 2); 
-    B << 2, 8,
-         1, 10,
-         4, 12;
-    Eigen::MatrixXd C(3, 2);
-    
-    C.row(0)=B.row(0)/B(0,0);
-    C.row(1)=B.row(1)-B.row(0)*(B(1,0)/B(0,0));
-    C.row(2)=B.row(2)-B.row(0)*(B(2,0)/B(0,0));
+    Eigen::MatrixXd temp(A.rows(), A.cols()); 
+    Eigen::MatrixXd result(A.rows(), A.cols());
 
-    std::cout << A <<std::endl<<std::endl<<B<<std::endl<<std::endl<<C<<std::endl;
+    int rowcount = A.rows();
+    
+    for (int j=0;j < rowcount; ++j)
+    {
+        result.row(j)=A.row(j)/A(j,j);
+        for (int i=0; i<rowcount;++i)
+        {   
+            if (i==0)
+            {
+                temp.row(i)=A.row(i)/result(j,j);
+            }
+            else
+            {
+                temp.row(i)=A.row(i)-result.row(j)*(A(i,j)/result(j,j));
+            }
+        }   
+        A=temp;
+    }
+    std::cout << A <<std::endl<<std::endl<<temp<<std::endl<<std::endl<<result<<std::endl;
 
     return 0;
 }
