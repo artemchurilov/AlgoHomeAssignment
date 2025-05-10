@@ -6,55 +6,14 @@
 
 #include <Eigen/Dense>
 #include "../include/lazycsv.hpp"
+#include "../include/gauss.h"
 #include "../include/file_read.h"
 
 int main() {
     Eigen::MatrixXd A = fileRead("AB.csv");
-    Eigen::MatrixXd temp(A.rows(), A.cols()); 
-    Eigen::MatrixXd result(A.rows(), A.cols());
-
-    int rowcount = A.rows();
-    for (int j=0;j < rowcount; ++j)
-    {
-        for (int k=j; k<rowcount; ++k)
-        {
-            if(A(k,j)==0)
-            {
-                continue;
-            }
-            else
-            {
-                A.row(j).swap(A.row(k));  
-                break;      
-            }
-        }
-        result.row(j)=A.row(j)/A(j,j);
-        for (int i=0; i<rowcount;++i)
-        {   
-            if (i==j)
-            {
-                temp.row(i)=A.row(i)/result(j,j);
-            }
-            else
-            {
-                temp.row(i)=A.row(i)-result.row(j)*(A(i,j)/result(j,j));
-            }
-        }   
-        A=temp;
-    }
-    A=result;
-    for (int i=rowcount-1;i>=0;--i)
-    {
-        temp = A;
-        for (int j=rowcount-1; j>=0;--j)
-        {        
-            if (j!=i)
-            {
-                A.row(i)-=temp(i,j)*temp.row(j);
-            }
-        }
-    }
-    std::cout << A <<std::endl<<std::endl<<temp<<std::endl<<std::endl<<result<<std::endl;
+    Eigen::MatrixXd Itog = gauss(A); 
+    
+    std::cout << A <<std::endl<<std::endl<<Itog<<std::endl;
 
     return 0;
 }
