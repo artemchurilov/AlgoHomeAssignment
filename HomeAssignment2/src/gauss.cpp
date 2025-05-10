@@ -8,46 +8,74 @@ Eigen::MatrixXd gauss(Eigen::MatrixXd A)
 
     int rowcount = A.rows();
     int colcount = A.cols();
-    for (int j=0;j < rowcount; ++j)
+    int rank = 0;
+
+    for (int j=0;j < colcount-1&&rank<rowcount; ++j)
     {
-        for (int k=j; k<rowcount; ++k)
+        int general = rank;
+        for (int k=rank; k<rowcount; ++k)
         {
-            if(std::abs(A(k,j))>eps)
+            if(std::abs(A(k,j))>std::abs(A(general,j)))
             {
-                A.row(j).swap(A.row(k));  
-                break;       
+                general = k;
             }
-        }
-        if (std::abs(A(j,j))<eps){
-            bool all_zero = true;
-            for (int l = 0; l < colcount - 1; ++l)
-            {    
-                if (std::abs(A(j,l))>eps)
-                {
-                    all_zero = false;
-                    break;
-                }
-            }
-            if (all_zero && std::abs(A(j,colcount-1))>eps)
-            {
-                throw std::runtime_error("System doesn't have any solutions");
-            }
-            continue;
         }
 
-        A.row(j)=A.row(j).array()/A(j,j);
-        for (int i=j+1; i<rowcount;++i)
-        {   
-            A.row(i)-= A.row(j)*(A(i,j));
-        }   
+        if(std::abs(A(general,j))<eps)
+        {
+            continue;
+        }
+        A.row(general).swap(A.row(rank));  
+        A.row(rank)/=A(rank,j);
+        for (int i = rank+1; i <rowcount; ++i)
+        {
+            A.row(i)-=A.row(rank)*A(i,j);
+        }
+        rank++;
     }
-    for (int j=rowcount-1;j>=0;--j)
+    for (int i=rank;i<rowcount;++i)
     {
-        for (int i=j-1; i>=0;--i)
-        {        
-            A.row(i)-=A.row(j)*A(i,j);
-            
+        if (std::abs(A(i,colcount-1))>eps)
+        {
+            throw std::runtime_error("System's not compitable");
         }
     }
+    for (int i=rank-1; i>=0;--i)
+    {
+        int lead = -1;
+        for (int j=0;j<colcount-1; ++j)
+        {
+            if (std::abs(A(i,j))>eps)
+            {
+                lead=j;
+                break;
+            }
+        }
+        if (lead==-1)
+        {
+            continue;
+        }
+        for (int k=i-1;k>=0;--k)
+        {
+            A.row(k)-=A.row(i)*A(k,lead);
+        }
+    }
+
+    if (rank<colcount-1)
+    {
+        throw std::runtime_error("System has an infinite number of solution");
+    }
+
+    for (int i=0; i<A.rows();++i)
+    {
+        for (int j=0;j<A.cols();++j)
+        {
+            if (std::abs(A(i,j))<eps) 
+            {
+                A(i,j) = 0.0;
+            }
+        }
+    }
+
     return A;
 };
