@@ -26,7 +26,15 @@
 *.a
 *.lib
 
+
 # Executables
 *.exe
+*.json
 *.out
 *.app
+
+prog
+ascii85
+test-ascii85
+test-prog
+*.txt

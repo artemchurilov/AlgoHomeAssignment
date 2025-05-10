@@ -1,0 +1,32 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [coder]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y g++ python3 libgtest-dev libgmock-dev
+
+      - name: Build
+        run: cd HomeAssignment1 && make tests && make
+
+
+      - name: Run Encode Python tests
+        run: cd HomeAssignment1/tests && chmod +x test.sh && ./test.sh
+
+      - name: Run Encode Python tests
+        run: cd HomeAssignment1/tests && chmod +x test_wrongdata.sh && ./test_wrongdata.sh
+      - name: Run Decode Python tests
+        run: cd HomeAssignment1/tests && chmod +x test_decoder.sh && ./test_decoder.sh
+      - name: Run tests
+        run: cd HomeAssignment1 && ./test-ascii85
