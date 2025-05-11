@@ -5,34 +5,31 @@
 Eigen::MatrixXd gauss(Eigen::MatrixXd A)
 {
     const double eps = 1e-10;
-
-    int rowcount = A.rows();
-    int colcount = A.cols();
+    const int rowcount = A.rows();
+    const int colcount = A.cols();
     int rank = 0;
 
     for (int j=0;j < colcount-1&&rank<rowcount; ++j)
     {
-        int general = rank;
-        for (int k=rank; k<rowcount; ++k)
-        {
-            if(std::abs(A(k,j))>std::abs(A(general,j)))
-            {
-                general = k;
-            }
-        }
+        Eigen::Index max_row;
+        A.col(j).tail(rowcount-rank).cwiseAbs().maxCoeff(&max_row);
+        max_row+=rank;
 
-        if(std::abs(A(general,j))<eps)
+        if(std::abs(A(max_row,j))<eps)
         {
             continue;
         }
-        A.row(general).swap(A.row(rank));  
-        A.row(rank)/=A(rank,j);
-        for (int i = rank+1; i <rowcount; ++i)
-        {
-            A.row(i)-=A.row(rank)*A(i,j);
-        }
+
+        A.row(max_row).swap(A.row(rank));
+
+        const double val = A(rank,j);
+
+        A.row(rank) /=val;
+        A.bottomRows(rowcount-rank-1).middleCols(j,colcount-j) -= 
+        A.col(j).tail(rowcount-rank-1) * A.row(rank).middleCols(j,colcount-j);
         rank++;
     }
+
     for (int i=rank;i<rowcount;++i)
     {
         if (std::abs(A(i,colcount-1))>eps)
