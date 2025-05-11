@@ -35,28 +35,17 @@ Eigen::MatrixXd gauss(Eigen::MatrixXd A)
     {
         throw std::runtime_error("System's not compitable");
     }
-    
     for (int i=rank-1; i>=0;--i)
     {
-        int lead = -1;
-        for (int j=0;j<colcount-1; ++j)
-        {
-            if (std::abs(A(i,j))>eps)
-            {
-                lead=j;
-                break;
-            }
-        }
-        if (lead==-1)
+        Eigen::Index lead;
+        if (A.row(i).head(colcount-1).cwiseAbs().maxCoeff(&lead) < eps)
         {
             continue;
         }
-        for (int k=i-1;k>=0;--k)
-        {
-            A.row(k)-=A.row(i)*A(k,lead);
-        }
+        A.topRows(i).middleCols(lead, colcount-lead) -=
+            A.col(lead).head(i) * A.row(i).middleCols(lead,colcount-lead);
     }
-
+    
     if (rank<colcount-1)
     {
         throw std::runtime_error("System has an infinite number of solution");

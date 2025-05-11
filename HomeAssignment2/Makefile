@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -I. -I/usr/include/eigen3 -Werror -Wpedantic -Wall -Wextra -g -fPIC 
+CXXFLAGS = -std=c++17 -O3 -march=native -fopt-info-vec -fopenmp -I. -isystem /usr/include/eigen3 -Werror -Wpedantic -Wall -Wextra -g -fPIC 
 LDFLAGS = -lm
 
 TARGET = gauss
