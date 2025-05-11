@@ -62,16 +62,8 @@ Eigen::MatrixXd gauss(Eigen::MatrixXd A)
         throw std::runtime_error("System has an infinite number of solution");
     }
 
-    for (int i=0; i<A.rows();++i)
-    {
-        for (int j=0;j<A.cols();++j)
-        {
-            if (std::abs(A(i,j))<eps) 
-            {
-                A(i,j) = 0.0;
-            }
-        }
-    }
+    A = (A.array().abs()<eps).select(0,A);
+
 
     return A;
 };
