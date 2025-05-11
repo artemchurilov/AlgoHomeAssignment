@@ -8,11 +8,14 @@
 #include "../include/lazycsv.hpp"
 #include "../include/gauss.h"
 #include "../include/file_read.h"
+#include "../include/file_write.h"
+
 
 int main() {
     Eigen::MatrixXd A = fileRead("AB.csv");
     Eigen::MatrixXd Itog = gauss(A); 
     
     std::cout << A <<std::endl<<std::endl<<Itog<<std::endl;
+    fileWrite(A,"output.csv",15,false);
     return 0;
 }

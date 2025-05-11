@@ -29,7 +29,7 @@ Eigen::MatrixXd gauss(Eigen::MatrixXd A)
 
         const int remaining_rows = rowcount - rank - 1;
         const int remaining_cols = colcount - j;
-
+        
         A.bottomRows(remaining_rows).middleCols(j,remaining_cols) -= 
             A.col(j).tail(remaining_rows) * general_row.middleCols(j,remaining_cols);
         rank++;
