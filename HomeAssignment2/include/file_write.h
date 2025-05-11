@@ -1,5 +1,6 @@
 #ifndef FILE_WRITE_H
 #define FILE_WRITE_H
+
 #include <Eigen/Dense>
 #include <string>
 

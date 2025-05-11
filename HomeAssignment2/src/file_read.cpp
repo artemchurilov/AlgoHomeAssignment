@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include <Eigen/Dense>
-#include "../include/lazycsv.hpp"
+#include <lazycsv.hpp>
 #include "../include/file_read.h"
 
 Eigen::MatrixXd fileRead(const std::string& filename)

@@ -5,7 +5,7 @@
 #include <typeinfo>
 
 #include <Eigen/Dense>
-#include "../include/lazycsv.hpp"
+#include <lazycsv.hpp>
 #include "../include/gauss.h"
 #include "../include/file_read.h"
 #include "../include/file_write.h"
