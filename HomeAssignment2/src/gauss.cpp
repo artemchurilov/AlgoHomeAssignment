@@ -26,8 +26,12 @@ Eigen::MatrixXd gauss(Eigen::MatrixXd A)
         const double val = A(rank,j);
 
         A.row(rank).noalias() = general_row/val;
-        A.bottomRows(rowcount-rank-1).middleCols(j,colcount-j) -= 
-            A.col(j).tail(rowcount-rank-1) * general_row.middleCols(j,colcount-j);
+
+        const int remaining_rows = rowcount - rank - 1;
+        const int remaining_cols = colcount - j;
+
+        A.bottomRows(remaining_rows).middleCols(j,remaining_cols) -= 
+            A.col(j).tail(remaining_rows) * general_row.middleCols(j,remaining_cols);
         rank++;
     }
 
@@ -42,8 +46,9 @@ Eigen::MatrixXd gauss(Eigen::MatrixXd A)
         {
             continue;
         }
-        A.topRows(i).middleCols(lead, colcount-lead) -=
-            A.col(lead).head(i) * A.row(i).middleCols(lead,colcount-lead);
+        const int remaining_cols_reverse = colcount - lead;
+        A.topRows(i).middleCols(lead, remaining_cols_reverse) -=
+            A.col(lead).head(i) * A.row(i).middleCols(lead,remaining_cols_reverse);
     }
     
     if (rank<colcount-1)
