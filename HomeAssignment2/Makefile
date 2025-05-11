@@ -18,7 +18,7 @@ TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)
 TEST_DEPENDS = $(TEST_OBJECTS:.o=.d)
 
 LDXXFLAGS = -L. -l:$(LIBPROJECT) $(LDFLAGS)
-LDGTESTFLAGS = $(LDXXFLAGS) -lgtest -lgtest_main -pthread 
+LDGTESTFLAGS = $(LDXXFLAGS) -lgtest -lgtest_main -pthread -O3 -march=native -fopt-info-vec -fopenmp
 
 .PHONY: all clean cleanall tests runtests
 

@@ -60,6 +60,40 @@ TEST(GaussMethod,SimpleSystem)
     EXPECT_NEAR(A(2,4),B(2,4),1e-10);
 }
 
+TEST(GaussMethod,RandomData)
+{
+    Eigen::MatrixXd random_matrix = Eigen::MatrixXd::Random(1000, 1001);
+    Eigen::MatrixXd myA = gauss(random_matrix);
+    Eigen::MatrixXd A = random_matrix.leftCols(random_matrix.cols() - 1);
+    Eigen::VectorXd b = random_matrix.rightCols(1);  
+
+    Eigen::MatrixXd x = A.partialPivLu().solve(b);
+    EXPECT_NEAR(myA(0,1000),x(0,0),1e-10);
+}  
+
+TEST(GaussMethod,AnotherRandomData)
+{
+    Eigen::MatrixXd random_matrix = Eigen::MatrixXd::Random(2000, 2001);
+    Eigen::MatrixXd myA = gauss(random_matrix);
+    Eigen::MatrixXd A = random_matrix.leftCols(random_matrix.cols() - 1);
+    Eigen::VectorXd b = random_matrix.rightCols(1);  
+
+    Eigen::MatrixXd x = A.partialPivLu().solve(b);
+    EXPECT_NEAR(myA(0,2000),x(0,0),1e-10);
+    EXPECT_NEAR(myA(1,2000),x(1,0),1e-10);
+}   
+
+TEST(GaussMethod,AnotherAnotherRandomData)
+{
+    Eigen::MatrixXd random_matrix = Eigen::MatrixXd::Random(10, 11);
+    Eigen::MatrixXd myA = gauss(random_matrix);
+    Eigen::MatrixXd A = random_matrix.leftCols(random_matrix.cols() - 1);
+    Eigen::VectorXd b = random_matrix.rightCols(1);  
+
+    Eigen::MatrixXd x = A.partialPivLu().solve(b);
+    EXPECT_NEAR(myA(0,10),x(0,0),1e-10);
+}   
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
