@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -O3 -march=native -fopt-info-vec -fopenmp -I. -isystem /usr/include/eigen3 -Werror -Wpedantic -Wall -Wextra -g -fPIC 
+CXXFLAGS = -std=c++17 -O3 -march=native -fopt-info-vec -fopenmp -I. -isystem /usr/include/eigen3 -Iexternals/lazycsv -Werror -Wpedantic -Wall -Wextra -g -fPIC 
 LDFLAGS = -lm
 
 TARGET = gauss
@@ -18,7 +18,7 @@ TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)
 TEST_DEPENDS = $(TEST_OBJECTS:.o=.d)
 
 LDXXFLAGS = -L. -l:$(LIBPROJECT) $(LDFLAGS)
-LDGTESTFLAGS = $(LDXXFLAGS) -lgtest -lgtest_main -pthread -O3 -march=native -fopt-info-vec -fopenmp
+LDGTESTFLAGS = $(LDXXFLAGS) -lgtest -lgtest_main -pthread -O3 -march=native -fopt-info-vec -fopenmp -Iexternals/lazycsv
 
 .PHONY: all clean cleanall tests runtests
 
