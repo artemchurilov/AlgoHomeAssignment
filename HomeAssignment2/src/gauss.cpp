@@ -26,18 +26,16 @@ Eigen::MatrixXd gauss(Eigen::MatrixXd A)
         const double val = A(rank,j);
 
         A.row(rank).noalias() = general_row/val;
-        A.bottomRows(rowcount-rank-1).middleCols(j,colcount-j).noalias() -= 
+        A.bottomRows(rowcount-rank-1).middleCols(j,colcount-j) -= 
             A.col(j).tail(rowcount-rank-1) * general_row.middleCols(j,colcount-j);
         rank++;
     }
 
-    for (int i=rank;i<rowcount;++i)
+    if ((A.bottomRows(rowcount-rank).rightCols(1).array().abs()>eps).any())
     {
-        if (std::abs(A(i,colcount-1))>eps)
-        {
-            throw std::runtime_error("System's not compitable");
-        }
+        throw std::runtime_error("System's not compitable");
     }
+    
     for (int i=rank-1; i>=0;--i)
     {
         int lead = -1;

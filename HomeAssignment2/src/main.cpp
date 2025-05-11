@@ -14,6 +14,5 @@ int main() {
     Eigen::MatrixXd Itog = gauss(A); 
     
     std::cout << A <<std::endl<<std::endl<<Itog<<std::endl;
-
     return 0;
 }

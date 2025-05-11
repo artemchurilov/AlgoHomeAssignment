@@ -60,8 +60,6 @@ TEST(GaussMethod,SimpleSystem)
     EXPECT_NEAR(A(2,4),B(2,4),1e-10);
 }
 
-
-
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
