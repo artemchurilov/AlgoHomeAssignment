@@ -38,3 +38,5 @@ ascii85
 test-ascii85
 test-prog
 *.txt
+gauss
+test-gauss
