@@ -22,11 +22,12 @@ Eigen::MatrixXd gauss(Eigen::MatrixXd A)
 
         A.row(max_row).swap(A.row(rank));
 
+        const auto general_row = A.row(rank);
         const double val = A(rank,j);
 
-        A.row(rank) /=val;
-        A.bottomRows(rowcount-rank-1).middleCols(j,colcount-j) -= 
-        A.col(j).tail(rowcount-rank-1) * A.row(rank).middleCols(j,colcount-j);
+        A.row(rank).noalias() = general_row/val;
+        A.bottomRows(rowcount-rank-1).middleCols(j,colcount-j).noalias() -= 
+            A.col(j).tail(rowcount-rank-1) * general_row.middleCols(j,colcount-j);
         rank++;
     }
 
