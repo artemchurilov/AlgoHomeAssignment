@@ -11,13 +11,10 @@
 #include "../include/file_write.h"
 
 
-int main() {
-    
+int main()
+{
     Eigen::MatrixXd A = fileRead("AB.csv");
-    Eigen::MatrixXd Itog = gauss(A); 
-    
-    std::cout << A <<std::endl<<std::endl<<Itog<<std::endl;
-
-    fileWrite(A,"output.csv",15,false);
+    Eigen::MatrixXd Itog = gauss(A);
+    fileWrite(Itog,"output.csv",15,false);
     return 0;
 }

@@ -27,7 +27,8 @@ Eigen::MatrixXd fileRead(const std::string& filename)
     for(auto r : rcsv)
     {
         int ic = 0;
-        for(double e: r) {
+        for(double e: r)
+        {
             A(ir, ic++) = e;
         }
         ir++;
